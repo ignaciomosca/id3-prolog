@@ -1,8 +1,8 @@
 ?- test(1,R).
-R = [bueno, malo].
+R = [good, evil].
 
 ?- test(2,R).
-R = [ ([], []), ([batman], [alfred]), ([batman, robin], []), ([pinguino], [batman, robin, acertijo]), ([], [batman, robin, gatubela, acertijo]), ([], []), ([], [])].
+R = [ ([], []), ([batman], [alfred]), ([batman, robin], []), ([penguin], [batman, robin, riddler]), ([], [batman, robin, catwoman, riddler]), ([], []), ([], [])].
 
 ?- test(3,R).
 R = [1, 0.3333333333333333, 0.5, 0, 0].
@@ -11,22 +11,22 @@ R = [1, 0.3333333333333333, 0.5, 0, 0].
 R = [-0.0, 0.6931471805599453, 1.0, 0.2703100720721096, 1.0, 0, 1.0].
 
 ?- test(5,R).
-R = [fumador, mascara, capa, mascara, orejas, capa, hombre].
+R = [smoker, mask, cape, mask, ears, cape, man].
 
 ?- test(6,R).
-R = [bueno, bueno, malo].
+R = [good, good, evil].
 
 ?- test(7,R).
-R = [hoja(malo), hoja(bueno), hoja(malo), hoja(bueno), hoja(bueno), nodo(fumador, hoja(malo), nodo(capa, hoja(bueno), nodo(mascara, hoja(bueno), hoja(bueno)))), nodo(orejas, hoja(bueno), nodo(corbata, hoja(malo), hoja(bueno)))].
+R = [leaf(evil), leaf(good), leaf(evil), leaf(good), leaf(good), node(smoker, leaf(evil), node(cape, leaf(good), node(mask, leaf(good), leaf(good)))), node(ears, leaf(good), node(tie, leaf(evil), leaf(good)))].
 
 ?- test(8,R).
-R = nodo(capa, hoja(bueno), nodo(mascara, hoja(malo), nodo(orejas, hoja(malo), nodo(fumador, hoja(malo), nodo(corbata, hoja(bueno), hoja(malo)))))) ;
+R = node(cape, leaf(good), node(mask, leaf(evil), node(ears, leaf(evil), node(smoker, leaf(evil), node(tie, leaf(good), leaf(evil)))))) ;
 false.
 
 ?- test(9,R).
-R = [bueno, malo, bueno, malo].
+R = [good, evil, good, evil].
 
 ?- test(10,R).
-R = [ (batichica, bueno), (acertijo, malo)] ;
-false.
+R = [(riddler, evil),  (batgirl, good)].
+
 

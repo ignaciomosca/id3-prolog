@@ -1,133 +1,133 @@
 ﻿%%%%%%%%%%%%%%%%%%%%%%
-%% Predicados dados %%
+%% Given Predicates %%
 %%%%%%%%%%%%%%%%%%%%%%
 
 
 call1(F, X) :- G=.. [F,X], call(G).
 
-%% Nombres
+%% Names
 
-nombre(batman).
-nombre(robin).
-nombre(alfred).
-nombre(pinguino).
-nombre(gatubela).
-nombre(guason).
-nombre(batichica).
-nombre(acertijo).
+name(batman).
+name(robin).
+name(alfred).
+name(penguin).
+name(catwoman).
+name(joker).
+name(batgirl).
+name(riddler).
 
-%% Atributos
+%% attributes
 
-atributo(hombre).
-atributo(mascara).
-atributo(capa).
-atributo(corbata).
-atributo(orejas).
-atributo(fumador).
+attribute(man).
+attribute(mask).
+attribute(cape).
+attribute(tie).
+attribute(ears).
+attribute(smoker).
 
-%% Clases
+%% Classes
 
-clase(bueno).
-clase(malo).
+class(good).
+class(evil).
 
-%% Registros
+%% Attributes
 
-hombre(batman).
-hombre(robin). 
-hombre(alfred).
-hombre(pinguino).
-hombre(guason).
-hombre(acertijo).
+man(batman).
+man(robin). 
+man(alfred).
+man(penguin).
+man(joker).
+man(riddler).
 
-mascara(batman).
-mascara(robin).
-mascara(gatubela).
-mascara(batichica).
-mascara(acertijo).
+mask(batman).
+mask(robin).
+mask(catwoman).
+mask(batgirl).
+mask(riddler).
 
-capa(batman).
-capa(robin).
-capa(batichica).
+cape(batman).
+cape(robin).
+cape(batgirl).
 
-corbata(alfred).
-corbata(pinguino).
+tie(alfred).
+tie(penguin).
 
-orejas(batman).
-orejas(gatubela).
-orejas(batichica).
+ears(batman).
+ears(catwoman).
+ears(batgirl).
 
-fumador(pinguino).
+smoker(penguin).
 
-%% Ejemplos
+%% Examples
 
-clasede(batman, bueno).
-clasede(robin, bueno).
-clasede(alfred, bueno).
-clasede(pinguino, malo).
-clasede(gatubela, malo).
-clasede(guason, malo).
+classof(batman, good).
+classof(robin, good).
+classof(alfred, good).
+classof(penguin, evil).
+classof(catwoman, evil).
+classof(joker, evil).
 
-ejemplos(Ns) :- findall(N, (nombre(N),clase(C), clasede(N, C)), Ns).
+examples(Ns) :- findall(N, (name(N),class(C), classof(N, C)), Ns).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Predicados a definir %%
+%% Predicates %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 call1(F, X) :- G=.. [F,X], call(G).
 
-mismaclase([N1|[]],C):- nombre(N1),clasede(N1,C),!.
-mismaclase([N1,N2|Ns],C):- nombre(N1),clasede(N1,C),nombre(N2),clasede(N2,C),mismaclase([N2|Ns],C),!.
+sameclass([N1|[]],C):- name(N1),classof(N1,C),!.
+sameclass([N1,N2|Ns],C):- name(N1),classof(N1,C),name(N2),classof(N2,C),sameclass([N2|Ns],C),!.
 
-particion(Xs, A, NT, NF) :- findall(X, (atributo(A),member(X, Xs), call1(A, X)), NT), findall(Y, (atributo(A),member(Y, Xs),nombre(Y), not(call1(A, Y))), NF).
+partition(Xs, A, NT, NF) :- findall(X, (attribute(A),member(X, Xs), call1(A, X)), NT), findall(Y, (attribute(A),member(Y, Xs),name(Y), not(call1(A, Y))), NF).
 
-%%obtiene todos los nombres de una clase C
-filtrarPorClase(Ns,C,Rs):- findall(N, (member(N,Ns),clase(C),nombre(N),clasede(N,C)), Rs).
+%%gets all the names for a class C
+filterByClass(Ns,C,Rs):- findall(N, (member(N,Ns),class(C),name(N),classof(N,C)), Rs).
 
-atributos(As):-findall(A,atributo(A),As),!.
+attributes(As):-findall(A,attribute(A),As),!.
 
-proporcion([],_,_,0),!.
-proporcion(Ns, C, A, 0):- atributo(A),clase(C), particion(Ns,A,NT,NF), filtrarPorClase(NT,C,Rs), length(Rs,TLista),length(NT,T),T=0.
-proporcion(Ns, C, A, P):- atributo(A),clase(C), particion(Ns,A,NT,NF), filtrarPorClase(NT,C,Rs), length(Rs,TLista),length(NT,T),T>0,P is (TLista/T).
+proportion([],_,_,0),!.
+proportion(Ns, C, A, 0):- attribute(A),class(C), partition(Ns,A,NT,NF), filterByClass(NT,C,Rs), length(Rs,TLista),length(NT,T),T=0.
+proportion(Ns, C, A, P):- attribute(A),class(C), partition(Ns,A,NT,NF), filterByClass(NT,C,Rs), length(Rs,TLista),length(NT,T),T>0,P is (TLista/T).
 
-sumatoria([C|Cs],Ns,A,Acc,E):-  proporcion(Ns,C,A,P), P=0, A1 is (Acc+0),sumatoria(Cs,Ns,A,A1,E).
-sumatoria([C|Cs],Ns,A,Acc,E):-  proporcion(Ns,C,A,P), P>0, log(P,R), A1 is (Acc+P*R),sumatoria(Cs,Ns,A,A1,E).
-sumatoria([C|[]],Ns,A,Acc,E):- proporcion(Ns,C,A,P), P>0, log(P,R), E is (Acc+P*R).
-sumatoria([C|[]],Ns,A,Acc,Acc):- proporcion(Ns,C,A,P), P=0.
+sum([C|Cs],Ns,A,Acc,E):-  proportion(Ns,C,A,P), P=0, A1 is (Acc+0),sum(Cs,Ns,A,A1,E).
+sum([C|Cs],Ns,A,Acc,E):-  proportion(Ns,C,A,P), P>0, log(P,R), A1 is (Acc+P*R),sum(Cs,Ns,A,A1,E).
+sum([C|[]],Ns,A,Acc,E):- proportion(Ns,C,A,P), P>0, log(P,R), E is (Acc+P*R).
+sum([C|[]],Ns,A,Acc,Acc):- proportion(Ns,C,A,P), P=0.
 
-%%obtiene las clases de una lista de nombres
-obtenerClases(Ns,Cs):-findall(C,(member(N,Ns),nombre(N),clasede(N,C)),R),sort(R,Cs).
+%%gets the classes of a list of names
+getClasses(Ns,Cs):-findall(C,(member(N,Ns),name(N),classof(N,C)),R),sort(R,Cs).
 
-entropia([], As, A,0):-atributo(A),member(A,As).
-entropia(_, As, A, 1.0):- atributo(A),not(member(A,As)).
-entropia(Ns, As, A, E):- atributo(A),member(A,As), obtenerClases(Ns,Clases), sumatoria(Clases,Ns,A,0,S), E is (-1*S).
+entropy([], As, A,0):-attribute(A),member(A,As).
+entropy(_, As, A, 1.0):- attribute(A),not(member(A,As)).
+entropy(Ns, As, A, E):- attribute(A),member(A,As), getClasses(Ns,Clases), sum(Clases,Ns,A,0,S), E is (-1*S).
 
 minatr(Ns,[A1|[]],A1).
-minatr(Ns,[A1,A2|[]],A1):-atributo(A1),atributo(A2), entropia(Ns,[A1,A2|[]],A1,E1),entropia(Ns,[A1,A2|[]],A2,E2),E1=<E2,!.
-minatr(Ns, [A1,A2|[]], A2):- atributo(A1),atributo(A2),entropia(Ns,[A1,A2|[]],A1,E1),entropia(Ns,[A1,A2|[]],A2,E2),E1>E2,!.
-minatr(Ns, [A1,A2|As], M):- atributo(A1),atributo(A2), entropia(Ns,[A1,A2|As],A1,E1),entropia(Ns,[A1,A2|As],A2,E2),E1=<E2,minatr(Ns,[A1|As],M),!.
-minatr(Ns, [A1,A2|As], M):- atributo(A1),atributo(A2),entropia(Ns,[A1,A2|As],A1,E1),entropia(Ns,[A1,A2|As],A2,E2),E1>E2,minatr(Ns,[A2|As],M),!.
+minatr(Ns,[A1,A2|[]],A1):-attribute(A1),attribute(A2), entropy(Ns,[A1,A2|[]],A1,E1),entropy(Ns,[A1,A2|[]],A2,E2),E1=<E2,!.
+minatr(Ns, [A1,A2|[]], A2):- attribute(A1),attribute(A2),entropy(Ns,[A1,A2|[]],A1,E1),entropy(Ns,[A1,A2|[]],A2,E2),E1>E2,!.
+minatr(Ns, [A1,A2|As], M):- attribute(A1),attribute(A2), entropy(Ns,[A1,A2|As],A1,E1),entropy(Ns,[A1,A2|As],A2,E2),E1=<E2,minatr(Ns,[A1|As],M),!.
+minatr(Ns, [A1,A2|As], M):- attribute(A1),attribute(A2),entropy(Ns,[A1,A2|As],A1,E1),entropy(Ns,[A1,A2|As],A2,E2),E1>E2,minatr(Ns,[A2|As],M),!.
 
-%%particiona clases entre buenos y malos, la sublista que tenga más elementos es la de la clase más representativa
-particionClases(Cs,Bs,Ms) :- findall(C, (member(C, Cs), clase(C) == clase(bueno)), Bs), findall(C, (member(C, Cs), clase(C) == clase(malo)), Ms),!.
+%%partitiona classs entre goods y evils, la sublista que tenga más elementos es la de la class más representativa
+partitionClasses(Cs,Bs,Ms) :- findall(C, (member(C, Cs), class(C) == class(good)), Bs), findall(C, (member(C, Cs), class(C) == class(evil)), Ms),!.
 
-maxcla(Ns,C):-length(Ns,L),L>0,clase(C),obtenerClases(Ns,Cs),particionClases(Cs,Bs,Ms), length(Bs,B), length(Ms,M), B>=M,C=bueno,!.
-maxcla(Ns,C):-length(Ns,L),L>0,clase(C),obtenerClases(Ns,Cs),particionClases(Cs,Bs,Ms), length(Bs,B), length(Ms,M), M>B,C=malo,!.
+maxcla(Ns,C):-length(Ns,L),L>0,class(C),getClasses(Ns,Cs),partitionClasses(Cs,Bs,Ms), length(Bs,B), length(Ms,M), B>=M,C=good,!.
+maxcla(Ns,C):-length(Ns,L),L>0,class(C),getClasses(Ns,Cs),partitionClasses(Cs,Bs,Ms), length(Bs,B), length(Ms,M), M>B,C=evil,!.
 
-id3(Ns, [], C, hoja(C1)):- maxcla(Ns,C1),!.
-id3([], As, C, T):- T=hoja(C),!.
-id3(Ns, As, C, T):- mismaclase(Ns,C1),T=hoja(C1),!.
-id3(Ns,As,C,T):- minatr(Ns,As,A), delete(As,A,R), particion(Ns,A,NT,NF), id3(NT,R,C,T1), id3(NF,R,C,T2), (T=nodo(A,T1, T2)),!.
+id3(Ns, [], C, leaf(C1)):- maxcla(Ns,C1),!.
+id3([], As, C, T):- T=leaf(C),!.
+id3(Ns, As, C, T):- sameclass(Ns,C1),T=leaf(C1),!.
+id3(Ns,As,C,T):- minatr(Ns,As,A), delete(As,A,R), partition(Ns,A,NT,NF), id3(NT,R,C,T1), id3(NF,R,C,T2), (T=node(A,T1, T2)),!.
 
-arbol(T):- ejemplos(Ns),atributos(As), maxcla(Ns,C), id3(Ns,As,C,T).
+tree(T):- examples(Ns),attributes(As), maxcla(Ns,C), id3(Ns,As,C,T).
 
-clasificar(T, N,C):-nombre(N),clasede(N,C),!.
-clasificar(hoja(C), N,C):-nombre(N).
-clasificar(nodo(A,T1,T2), N,C):- nombre(N),call1(A,N), clasificar(T1,N,C),!.
-clasificar(nodo(A,T1,T2), N,C):- clasificar(T2,N,C),!.
+classify(T, N,C):-name(N),classof(N,C),!.
+classify(leaf(C), N,C):-name(N).
+classify(node(A,T1,T2), N,C):- name(N),call1(A,N), classify(T1,N,C),!.
+classify(node(A,T1,T2), N,C):- classify(T2,N,C),!.
 
-clasificacion(Ns, Xs):-arbol(T),clasificaraux(T,Ns,[],Xs).
+clasification(Ns, Xs):-tree(T),classifyaux(T,Ns,[],Xs).
 
-%%función auxiliar que almacena en Aux los nombres de los elementos que no tienen una clase.
-clasificaraux(T,[],Aux,Xs):-Xs=Aux.
-clasificaraux(T,[N|Ns],Aux,Xs):-clasificar(T,N,C),clasede(N,C), clasificaraux(T,Ns,Aux,Xs),!.
-clasificaraux(T,[N|Ns],Aux,Xs):-clasificar(T,N,C), clasificaraux(T,Ns,[(N,C)|Aux],Xs),!.
+%%función auxiliar que almacena en Aux los names de los elementos que no tienen una class.
+classifyaux(T,[],Aux,Xs):-Xs=Aux.
+classifyaux(T,[N|Ns],Aux,Xs):-classify(T,N,C),classof(N,C), classifyaux(T,Ns,Aux,Xs),!.
+classifyaux(T,[N|Ns],Aux,Xs):-classify(T,N,C), classifyaux(T,Ns,[(N,C)|Aux],Xs),!.
